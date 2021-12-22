@@ -1,20 +1,15 @@
 use Northwind
 Select CategoryName,ProductName
-From Products join Categories
-              on Products.CategoryID = Categories.CategoryID
+From Products join Categories on Products.CategoryID = Categories.CategoryID
 
 Select c.CategoryID,CategoryName,ProductName
-From Products p inner join Categories c
-				on p.CategoryID = c.CategoryID
+From Products p inner join Categories c on p.CategoryID = c.CategoryID
 
- --join = inner join tabloları birleştirirken hangi tabloyu önce yazdığının bir önemi yok
+ 
 Select OrderID,CategoryName,ProductName   
-From Categories c join Products p
-				  on c.CategoryID = p.CategoryID
-				  join [Order Details] od
-				  on od.ProductID = p.ProductID
+From Categories c join Products p on c.CategoryID = p.CategoryID
+	          join [Order Details] od on od.ProductID = p.ProductID
 
-----------------------SORULAR------------------------------------------------
 
 --Ürünleri tedarik edildikleri firmalar ile listeleyin(Firma Adi | Ürü Adi)
 Select s.CompanyName,p.ProductName
@@ -28,21 +23,21 @@ Where c.CategoryName ='Beverages'
 --Hangi siparişi hangi çalışanım hangi müşteriye satmıştır(SiparişID,ÇalişanAdiSoyadi,SirketAdi
 Select Concat(e.FirstName,' ',e.LastName) as FullName,o.OrderID,c.CompanyName
 From Employees e join Orders o on e.EmployeeID = o.EmployeeID
-				 join Customers c on o.CustomerID = c.CustomerID
+		 join Customers c on o.CustomerID = c.CustomerID
 
 --Her bir çalışanın toplam ne kadar satış yaptığını listeleyiniz(fiyat - adet - indirim)
 Select Concat(e.FirstName,e.LastName)as FullName,sum(od.UnitPrice*od.Quantity*(1-od.Discount)) as Ciro
 From Employees e join Orders o on e.EmployeeID = o.EmployeeID
-				 join [Order Details] od on o.OrderID = od.OrderID
-				 join Products p on od.ProductID=p.ProductID
+		 join [Order Details] od on o.OrderID = od.OrderID
+		 join Products p on od.ProductID=p.ProductID
 Group by Concat(e.FirstName,e.LastName)
 Order by FullName
 	
 --Janet bugüne kadar hangi ürünleri satmış
 Select distinct  e.FirstName,e.LastName,p.ProductName
 From Employees e join Orders o on e.EmployeeID = o.EmployeeID
-				 join [Order Details] od on o.OrderID = od.OrderID
-				 join Products p on od.ProductID=p.ProductID
+		 join [Order Details] od on o.OrderID = od.OrderID
+		 join Products p on od.ProductID=p.ProductID
 Where e.FirstName = 'Janet'
 
 --Ürün çeşidi olarak incelendiğinde en fazla ürün aldığımız 3 toptancıya toplam kaç çeşit ürün alındığı bilgisi ile birlikte listeleyiniz
@@ -54,13 +49,12 @@ Order by 2 desc
 --Şirket adında a geçen müşterilerin vermiş olduğu Nancy Andrew ve Janet tarafından onaylanmış speedy express firması ile taşınmamış siparişlere ne kadar kargo ücreti ödenmiştir?
 Select c.CompanyName,Sum(o.Freight) KargoUcreti
 From Employees e join Orders o on e.EmployeeID = o.EmployeeID
-				 join Customers c on c.CustomerID = o.CustomerID
-				 join Shippers s on s.ShipperID = o.ShipVia
+		 join Customers c on c.CustomerID = o.CustomerID
+		 join Shippers s on s.ShipperID = o.ShipVia
 Where c.CompanyName like '%A%' and e.FirstName in('Nancy','Andrew','Janet') and s.CompanyName !='Speedy Express'
 Group by c.CompanyName
 Order by 2 desc
 
---ODEV---
 
 --1996 yılında firmamızdan urun almış müsteriler kimlerdir?
 Select distinct c.CompanyName
@@ -100,7 +94,7 @@ From Orders o full join Customers c on o.CustomerID = c.CustomerID
 --Siparis kalemlerindeki  ürünlerimin isimleri ve kaçar adet siparis verildigindi OrderId leri ile listeleyiniz
 Select od.OrderID,o.OrderDate,p.ProductName,p.UnitsOnOrder
 From [Order Details] od join Products p on od.ProductID = p.ProductID
-					    join Orders o on od.OrderID = o.OrderID
+			join Orders o on od.OrderID = o.OrderID
 Where p.UnitsOnOrder !=0
 
 --Territories tablosundaki bölge tanimlarinin hangi bölgeye ait olduklarini bölgelerin isimleri ile listeleyiniz.
